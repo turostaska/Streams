@@ -7,14 +7,17 @@
 template <typename T>
 class LinkedList {
 private:
-    struct ListNode{
+    struct ListNode {
         T data;
         std::shared_ptr<ListNode> next;
+        std::weak_ptr<ListNode> prev;
+        ListNode();
         ListNode(T);
     };
     std::shared_ptr<ListNode> first;
-    std::shared_ptr<ListNode> last;
+    std::weak_ptr<ListNode> last;
     std::size_t size;
+    void remove_node(std::shared_ptr<ListNode>);
 public:
     LinkedList();
     void push_back(T);
@@ -24,7 +27,6 @@ public:
     bool empty() const;
     void remove(const T&);
     void keep_if(std::function<bool(T)>);
-    void remove_node(std::shared_ptr<ListNode>);
 
     template <typename S>
     friend std::ostream& operator<<(std::ostream& os, const LinkedList<S>& list);
