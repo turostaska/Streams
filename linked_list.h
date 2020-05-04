@@ -28,6 +28,20 @@ public:
     void remove(const T&);
     void keep_if(std::function<bool(T)>);
 
+    class iterator {
+    private:
+        std::shared_ptr<ListNode> current;
+    public:
+        iterator(std::shared_ptr<ListNode>);
+        iterator& operator++();
+        iterator& operator--();
+        bool operator!=(const iterator&);
+        T& operator*();
+    };
+
+    iterator begin();
+    iterator end();
+
     template <typename S>
     friend std::ostream& operator<<(std::ostream& os, const LinkedList<S>& list);
 };

@@ -82,3 +82,38 @@ LinkedList<T>::ListNode::ListNode() {}
 
 template<typename T>
 LinkedList<T>::ListNode::ListNode(T data) : ListNode{} { this->data = data; }
+
+template<typename T>
+LinkedList<T>::iterator::iterator(std::shared_ptr<ListNode> ptr) : current{ptr} {}
+
+template<typename T>
+typename LinkedList<T>::iterator & LinkedList<T>::iterator::operator++() {
+    current = current->next;
+    return *this;
+}
+
+template<typename T>
+typename LinkedList<T>::iterator & LinkedList<T>::iterator::operator--() {
+    current = current->prev;
+    return *this;
+}
+
+template<typename T>
+typename LinkedList<T>::iterator LinkedList<T>::begin() {
+    return first->next;
+}
+
+template<typename T>
+typename LinkedList<T>::iterator LinkedList<T>::end() {
+    return last.lock();
+}
+
+template<typename T>
+bool LinkedList<T>::iterator::operator!=(const LinkedList::iterator & other) {
+    return current != other.current;
+}
+
+template<typename T>
+T &LinkedList<T>::iterator::operator*() {
+    return current->data;
+}
