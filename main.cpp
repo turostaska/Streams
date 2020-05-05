@@ -1,5 +1,6 @@
+#include <iostream>
 #include "linked_list.cpp"
-#include "stream.cpp"
+#include "eratosthenes.h"
 
 auto prime = [] (int x) {
     bool is_prime = true;
@@ -33,7 +34,13 @@ void get_prime_with_stream() {
     std::cout << "Stream: The 1000th prime is "<< stream.get_next() << std::endl;
 }
 
+void eratosthenes() {
+    Eratosthenes e{};
+    std::cout << "Eratosthenes: The 1000th prime is "<< e.get_nth_prime(1000) << std::endl;
+};
+
 int main() {
     get_prime_with_list();
     get_prime_with_stream();
+    eratosthenes();
 }
