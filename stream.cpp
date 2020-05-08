@@ -1,18 +1,18 @@
 #include "stream.h"
 
 template<typename T>
-Stream<T>::Stream(int start, std::function<T(int)> seq, std::function<bool(T)> pred) :
-    sequence{seq}, predicate{pred}, current_num{start} {}
+StreamElement<T>::StreamElement(T data) : data{data}, next{nullptr} {}
 
 template<typename T>
-T Stream<T>::get_next() {
-    return get_next_element();
+StreamElement<T>::StreamElement(T data, std::function<std::unique_ptr<StreamElement<T>> ()> fun)
+    : data{data}, next{fun} {}
+
+template<typename T>
+std::unique_ptr<StreamElement<T>> Stream<T>::begin() {
+    return first->next();
 }
 
 template<typename T>
-T Stream<T>::get_next_element() {
-    while(1) {
-        if ( predicate( sequence(current_num++) ) )
-            return sequence(current_num-1);
-    }
+Stream<T>::Stream(std::function< std::unique_ptr<StreamElement<T>> () > fun) {
+    first = std::make_unique<StreamElement<T>>( T{}, fun );
 }

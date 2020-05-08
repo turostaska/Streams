@@ -27,20 +27,44 @@ void get_prime_with_list() {
 }
 
 void get_prime_with_stream() {
-    auto seq = [] (int n) { return n; };
-    Stream<int> stream{2, seq, prime};
-    for (int i = 1; i < 1000; ++i) stream.get_next();
-
-    std::cout << "Stream: The 1000th prime is "<< stream.get_next() << std::endl;
+//    auto seq = [] (int n) { return n; };
+//    Stream<int> stream{2, seq, prime};
+//    for (int i = 1; i < 1000; ++i) stream.get_next();
+//
+//    std::cout << "Stream: The 1000th prime is "<< stream.get_next() << std::endl;
 }
 
-void eratosthenes() {
-    Eratosthenes e{};
-    std::cout << "Eratosthenes: The 1000th prime is "<< e.get_nth_prime(1000) << std::endl;
-};
+std::unique_ptr<StreamElement<int>> read_integers_from_stdin() {
+    int n;
+    if (std::cin >> n)
+        return std::make_unique<StreamElement<int>>(n, read_integers_from_stdin);
+    return nullptr;
+}
+
+std::unique_ptr<StreamElement<int>> integers_from_a_to_b(int a, int b) {
+    if (a <= b) {
+        auto b_bound = std::bind(integers_from_a_to_b, std::placeholders::_2, b);
+        auto a_bound = std::bind(b_bound, std::placeholders::_1, a+1);
+        return std::make_unique<StreamElement<int>>(a+1, a_bound);
+    }
+    return nullptr;
+}
 
 int main() {
-    get_prime_with_list();
-    get_prime_with_stream();
-    eratosthenes();
+    int n = 0;
+    std::function< std::unique_ptr<StreamElement<int>> () > from_1_to_1000 = [&] () -> std::unique_ptr<StreamElement<int>> {
+        n += 1;
+        if (n <= 1000)
+            return std::make_unique<StreamElement<int>>(n, from_1_to_1000);
+        return nullptr;
+    };
+
+    Stream<int> stream{ integers_from_a_to_b };
+
+    for (auto it = stream.begin(); it != nullptr; it = it->next(1, 1000))
+        std::cout << it->data << " ";
+    std::cout << std::endl;
+    for (auto it = stream.begin(); it != nullptr; it = it->next())
+        std::cout << it->data << " ";
+
 }

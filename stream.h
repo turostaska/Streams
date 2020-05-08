@@ -2,14 +2,23 @@
 #include <functional>
 
 template <typename T>
+struct StreamElement {
+    T data;
+    std::function< std::unique_ptr<StreamElement<T>> () > next;
+    StreamElement(T);
+    StreamElement(T, std::function< std::unique_ptr<StreamElement<T>> () >);
+};
+
+template <typename T>
 class Stream {
 private:
-    std::function<T(int)> sequence;
-    std::function<T(int)> predicate;
-    int current_num;
-    T get_next_element();
+    std::unique_ptr<StreamElement<T>> first;
 public:
-    Stream( int = 1, std::function<T(int)> = [] (int n) { return n; },
-            std::function<bool(T)> = [] (T) {return true;} );
-    T get_next();
+    Stream(std::function< std::unique_ptr<StreamElement<T>> () >);
+    std::unique_ptr<StreamElement<T>> begin();
+
 };
+
+
+
+
