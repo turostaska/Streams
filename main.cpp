@@ -2,7 +2,10 @@
 #include "linked_list.cpp"
 #include "eratosthenes.h"
 
-auto prime = [] (int x) {
+auto prime = [] (unsigned x) {
+    if (x < 2)
+        return false;
+
     bool is_prime = true;
     for (int i = 2; i*i <= x; ++i ) {
         if (x % i == 0) {
@@ -23,15 +26,6 @@ void get_prime_with_list() {
     auto it = list.begin();
     for (int i = 1; i < 1000; ++i) ++it;
     std::cout << "LinkedList: The 1000th prime is "<< *it << std::endl;
-
-}
-
-void get_prime_with_stream() {
-//    auto seq = [] (int n) { return n; };
-//    Stream<int> stream{2, seq, prime};
-//    for (int i = 1; i < 1000; ++i) stream.get_next();
-//
-//    std::cout << "Stream: The 1000th prime is "<< stream.get_next() << std::endl;
 }
 
 std::unique_ptr<StreamElement<int>> read_integers_from_stdin() {
@@ -41,30 +35,31 @@ std::unique_ptr<StreamElement<int>> read_integers_from_stdin() {
     return nullptr;
 }
 
-std::unique_ptr<StreamElement<int>> integers_from_a_to_b(int a, int b) {
-    if (a <= b) {
-        auto b_bound = std::bind(integers_from_a_to_b, std::placeholders::_2, b);
-        auto a_bound = std::bind(b_bound, std::placeholders::_1, a+1);
-        return std::make_unique<StreamElement<int>>(a+1, a_bound);
-    }
-    return nullptr;
+std::unique_ptr<StreamElement<unsigned>> make_prime_stream(unsigned from = 2) {
+    while (!prime(from))
+        from++;
+
+    return std::make_unique<StreamElement<unsigned>>(from, [=] () {
+        return make_prime_stream(from+1);
+    } );
 }
 
 int main() {
-    int n = 0;
-    std::function< std::unique_ptr<StreamElement<int>> () > from_1_to_1000 = [&] () -> std::unique_ptr<StreamElement<int>> {
-        n += 1;
-        if (n <= 1000)
-            return std::make_unique<StreamElement<int>>(n, from_1_to_1000);
-        return nullptr;
-    };
-
-    Stream<int> stream{ integers_from_a_to_b };
-
-    for (auto it = stream.begin(); it != nullptr; it = it->next(1, 1000))
+    for (auto it = StreamElement<short>::make_int_stream(-5,10); it != nullptr; it = it->next())
         std::cout << it->data << " ";
     std::cout << std::endl;
-    for (auto it = stream.begin(); it != nullptr; it = it->next())
-        std::cout << it->data << " ";
+
+
+    auto it = make_prime_stream();
+
+    for (int i = 0; i < 1000; i++) {
+        std::cout << "The " << i+1 << "th prime: " << it->data << std::endl;
+        it = it->next();
+    }
+
+
+    Eratosthenes e;
+    for (int i = 0; i < 1000; ++i)
+        std::cout << "The " << i+1 << "th prime: " << e.next() << std::endl;
 
 }

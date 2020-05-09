@@ -3,10 +3,10 @@
 
 class Eratosthenes {
 private:
-    std::vector<unsigned> primes;
-    //Stream<unsigned> stream;
+    std::vector< std::function< bool(unsigned) > > predicates;
+    std::unique_ptr< StreamElement<unsigned> > last;
+    static bool is_divisible_by(unsigned what, unsigned by);
 public:
     Eratosthenes();
-    unsigned get_nth_prime(size_t);
-
+    unsigned next();
 };

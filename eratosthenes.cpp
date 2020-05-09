@@ -1,16 +1,25 @@
 #include "eratosthenes.h"
 
-Eratosthenes::Eratosthenes() {}
+Eratosthenes::Eratosthenes() : last{ StreamElement<unsigned>::make_infinite_stream(2) } {}
 
-unsigned Eratosthenes::get_nth_prime(size_t n) {
-    start:
-    while (primes.size() < n) {
-        int to_try = 0;//stream.get_next();
-        for (unsigned i = 0; i < primes.size() && primes[i]*primes[i] <= to_try; ++i) {
-            if (to_try % primes[i] == 0)
+unsigned Eratosthenes::next() {
+        start:
+        unsigned next_num = last->data;
+        for (auto divisible : predicates) {
+            if (divisible(next_num)) {
+                last = last->next();
                 goto start;
+            }
         }
-        primes.push_back(to_try);
-    }
-    return primes[n-1];
+
+        predicates.push_back( [=] (unsigned n) {
+            return is_divisible_by(n, next_num);
+        } );
+
+        return next_num;
 }
+
+bool Eratosthenes::is_divisible_by(unsigned what, unsigned by) {
+    return what % by == 0;
+}
+
