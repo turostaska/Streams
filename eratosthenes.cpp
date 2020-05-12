@@ -2,7 +2,12 @@
 
 Eratosthenes::Eratosthenes() : last{ StreamElement<unsigned>::make_infinite_stream(2) } {}
 
-bool Eratosthenes::is_divisible_by(unsigned what, unsigned by) {
-    return what % by == 0;
+unsigned Eratosthenes::next() {
+    unsigned head = last->data;
+    last = StreamElement<unsigned>::filter(last, [=] (unsigned n) { return n == head || n % head != 0; });
+    last = last->next();
+    return head;
 }
+
+
 

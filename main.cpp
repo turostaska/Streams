@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include "linked_list.cpp"
 #include "eratosthenes.h"
 
@@ -53,11 +54,17 @@ int main() {
 //        it = it->next();
 //    }
 
-    auto ints = StreamElement<unsigned>::make_infinite_stream(2);
-    auto it = StreamElement<unsigned>::make_eratosthenes( ints );
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
-    for (int i = 0; i < 30; ++i) {
-        std::cout << it->data << std::endl;
-        it = it->next();
+//    auto ints = StreamElement<unsigned>::make_infinite_stream(2);
+//    auto it = StreamElement<unsigned>::make_eratosthenes( ints );
+    auto eratosthenes = Eratosthenes();
+
+    for (int i = 0; i < 25; ++i) {
+        std::cout << eratosthenes.next() << std::endl;
     }
+
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()/1000000.0f << "[s]" << std::endl;
+
 }

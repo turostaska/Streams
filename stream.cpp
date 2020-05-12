@@ -1,3 +1,4 @@
+#include <iostream>
 #include "stream.h"
 
 template <typename T>
@@ -41,8 +42,8 @@ template<typename T>
 std::unique_ptr<StreamElement<unsigned>> StreamElement<T>::make_eratosthenes(const std::unique_ptr<StreamElement<unsigned>> & str) {
     unsigned head = str->data;
     auto filtered = StreamElement<T>::filter(str, [=] (unsigned n) { return n == head || n % head != 0; });
-    return std::make_unique<StreamElement<unsigned>>(head, [filtered{filtered->next}] () {
-        return StreamElement<unsigned>::make_eratosthenes(filtered());
+    return std::make_unique<StreamElement<unsigned>>(head, [next{filtered->next}] () {
+        return StreamElement<unsigned>::make_eratosthenes(next());
     });
 }
 
