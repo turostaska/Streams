@@ -45,29 +45,18 @@ std::unique_ptr<StreamElement<unsigned>> make_prime_stream(unsigned from = 2) {
 }
 
 int main() {
-    for (auto it = StreamElement<short>::make_int_stream(-5,10); it != nullptr; it = it->next())
-        std::cout << it->data << " ";
-    std::cout << std::endl;
 
-
-//    auto it = make_prime_stream();
-//
+//    auto ints = StreamElement<int>::make_infinite_stream(1);
+//    auto it = StreamElement<int>::filter(ints, [](int i) { return i%4 == 0; });
 //    for (int i = 0; i < 1000; ++i) {
-//        std::cout << "The " << i+1 << "th prime: " << it->data << std::endl;
+//        std::cout << it->data << std::endl;
 //        it = it->next();
 //    }
 
-//    std::unique_ptr< StreamElement<int> > from_stdin = read_integers_from_stdin();
-//    auto it = StreamElement<int>::filter(from_stdin, [](int i) { return i%3 == 0; });
-//    while (it != nullptr) {
-//        std::cout << it->data;
-//        it = it->next();
-//    }
+    auto ints = StreamElement<unsigned>::make_infinite_stream(2);
+    auto it = StreamElement<unsigned>::make_eratosthenes( ints );
 
-    auto ints = StreamElement<int>::make_int_stream(1,1000);
-    auto it = StreamElement<int>::filter(std::move(ints), [](int i) { return i%4 == 0; });
-
-    while (it != nullptr) {
+    for (int i = 0; i < 30; ++i) {
         std::cout << it->data << std::endl;
         it = it->next();
     }

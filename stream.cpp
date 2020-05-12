@@ -26,14 +26,24 @@ std::unique_ptr<StreamElement<T>> StreamElement<T>::make_infinite_stream(T from)
 template<typename T>
 std::unique_ptr<StreamElement<T>> StreamElement<T>::filter(const std::unique_ptr<StreamElement<T>> & str, std::function<bool(T)> pred) {
     if (str->next() == nullptr)
-        return std::make_unique<StreamElement<T>>(str->data, [] () {return nullptr; });
+        return std::make_unique<StreamElement<T>>(str->data, [] () { return nullptr; });
 
     if (pred(str->data)) {
         return std::make_unique<StreamElement<T>>(str->data, [next{str->next}, pred] () {
             return StreamElement<T>::filter(next(), pred);
         });
     }
+
     return StreamElement<T>::filter(str->next(), pred);
+}
+
+template<typename T>
+std::unique_ptr<StreamElement<unsigned>> StreamElement<T>::make_eratosthenes(const std::unique_ptr<StreamElement<unsigned>> & str) {
+    unsigned head = str->data;
+    auto filtered = StreamElement<T>::filter(str, [=] (unsigned n) { return n == head || n % head != 0; });
+    return std::make_unique<StreamElement<unsigned>>(head, [filtered{filtered->next}] () {
+        return StreamElement<unsigned>::make_eratosthenes(filtered());
+    });
 }
 
 

@@ -8,5 +8,4 @@ private:
     static bool is_divisible_by(unsigned what, unsigned by);
 public:
     Eratosthenes();
-    unsigned next();
 };
