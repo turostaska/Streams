@@ -1,6 +1,3 @@
-#ifndef STREAM_LINKED_LIST_H
-#define STREAM_LINKED_LIST_H
-
 #include <memory>
 #include <functional>
 
@@ -45,7 +42,3 @@ public:
     template <typename S>
     friend std::ostream& operator<<(std::ostream& os, const LinkedList<S>& list);
 };
-
-
-
-#endif //STREAM_LINKED_LIST_H

@@ -1,7 +1,7 @@
 #include <memory>
 #include <functional>
 
-template <typename T, typename std::enable_if_t<std::is_integral_v<T>>* = nullptr>
+template <typename T>
 struct StreamElement {
     T data;
     std::function< std::unique_ptr<StreamElement<T>> () > next;
@@ -10,6 +10,7 @@ struct StreamElement {
 
     static std::unique_ptr<StreamElement<T>> make_int_stream(T from, T to);
     static std::unique_ptr<StreamElement<T>> make_infinite_stream(T from);
+    static std::unique_ptr<StreamElement<T>> filter(const std::unique_ptr< StreamElement<T> > & str, std::function<bool(T)> pred);
 };
 
 

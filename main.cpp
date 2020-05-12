@@ -50,16 +50,25 @@ int main() {
     std::cout << std::endl;
 
 
-    auto it = make_prime_stream();
+//    auto it = make_prime_stream();
+//
+//    for (int i = 0; i < 1000; ++i) {
+//        std::cout << "The " << i+1 << "th prime: " << it->data << std::endl;
+//        it = it->next();
+//    }
 
-    for (int i = 0; i < 1000; i++) {
-        std::cout << "The " << i+1 << "th prime: " << it->data << std::endl;
+//    std::unique_ptr< StreamElement<int> > from_stdin = read_integers_from_stdin();
+//    auto it = StreamElement<int>::filter(from_stdin, [](int i) { return i%3 == 0; });
+//    while (it != nullptr) {
+//        std::cout << it->data;
+//        it = it->next();
+//    }
+
+    auto ints = StreamElement<int>::make_int_stream(1,1000);
+    auto it = StreamElement<int>::filter(std::move(ints), [](int i) { return i%4 == 0; });
+
+    while (it != nullptr) {
+        std::cout << it->data << std::endl;
         it = it->next();
     }
-
-
-    Eratosthenes e;
-    for (int i = 0; i < 1000; ++i)
-        std::cout << "The " << i+1 << "th prime: " << e.next() << std::endl;
-
 }
