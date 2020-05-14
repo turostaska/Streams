@@ -1,7 +1,6 @@
 #include <iostream>
-#include <chrono>
 #include "linked_list.cpp"
-#include "eratosthenes.h"
+#include "stream.cpp"
 
 auto prime = [] (unsigned x) {
     if (x < 2)
@@ -46,25 +45,20 @@ std::unique_ptr<StreamElement<unsigned>> make_prime_stream(unsigned from = 2) {
 }
 
 int main() {
+    auto from_1 = StreamElement<int>::make_infinite_stream(1);
+    auto it = StreamElement<int>::filter(from_1, prime);
+    for (int i = 0; i < 999; ++i) {
 
-//    auto ints = StreamElement<int>::make_infinite_stream(1);
-//    auto it = StreamElement<int>::filter(ints, [](int i) { return i%4 == 0; });
-//    for (int i = 0; i < 1000; ++i) {
-//        std::cout << it->data << std::endl;
-//        it = it->next();
-//    }
-
-    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-
-//    auto ints = StreamElement<unsigned>::make_infinite_stream(2);
-//    auto it = StreamElement<unsigned>::make_eratosthenes( ints );
-    auto eratosthenes = Eratosthenes();
-
-    for (int i = 0; i < 25; ++i) {
-        std::cout << eratosthenes.next() << std::endl;
+        it = it->next();
     }
+    std::cout << "Az 1000. prím szűrés alapján: " << it->data << std::endl;
 
-    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()/1000000.0f << "[s]" << std::endl;
+    auto from_2 = StreamElement<unsigned>::make_infinite_stream(2);
+    auto eratosthenes = StreamElement<unsigned>::make_eratosthenes( from_2 );
+
+    for (int i = 0; i < 15; ++i) {
+        std::cout << "Az " << i+1 << ". prím szita alapján: " << eratosthenes->data << std::endl;
+        eratosthenes = eratosthenes->next();
+    }
 
 }

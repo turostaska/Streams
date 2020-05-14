@@ -1,4 +1,3 @@
-#include <iostream>
 #include "stream.h"
 
 template <typename T>
